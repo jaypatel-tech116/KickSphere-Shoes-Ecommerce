@@ -152,10 +152,10 @@ export default function ProductDetail() {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-5">
+          <div className="space-y-6 mt-4 lg:mt-0">
             <div>
-              <span className="text-[#E8000D] font-[Barlow] font-semibold text-sm uppercase tracking-widest">{product.brand}</span>
-              <h1 className="font-[Bebas_Neue] text-4xl sm:text-5xl text-white tracking-wide mt-1 leading-tight">{product.name}</h1>
+              <span className="text-[#E8000D] font-[Barlow] font-semibold text-xs sm:text-sm uppercase tracking-[0.2em]">{product.brand}</span>
+              <h1 className="font-[Bebas_Neue] text-4xl sm:text-5xl lg:text-6xl text-white tracking-wide mt-2 leading-[0.9]">{product.name}</h1>
             </div>
 
             <div className="flex items-center gap-3">

@@ -71,8 +71,8 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <img src="/logo.png" alt="KickSphere" className="h-auto w-42" onError={(e) => { e.target.style.display = 'none' }} />
+            <Link to="/" className="flex items-center">
+              <img src="/logo.png" alt="KickSphere" className="h-7 sm:h-9 w-auto" onError={(e) => { e.target.style.display = 'none' }} />
             </Link>
 
             {/* Desktop Nav */}
@@ -93,7 +93,7 @@ export default function Navbar() {
               <button onClick={() => setSearchOpen(!searchOpen)} className="text-[#A0A0A0] hover:text-white transition-colors p-1.5">
                 <Search size={20} />
               </button>
-              <Link to="/wishlist" className="hidden xs:block text-[#A0A0A0] hover:text-white transition-colors p-1.5">
+              <Link to="/wishlist" className="hidden sm:block text-[#A0A0A0] hover:text-white transition-colors p-1.5">
                 <Heart size={20} />
               </Link>
               <Link to="/cart" className="relative text-[#A0A0A0] hover:text-white transition-colors p-1.5">
