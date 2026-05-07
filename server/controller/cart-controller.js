@@ -4,7 +4,7 @@ import Product from "../model/product-model.js";
 
 export const addtocart = async (req, res) => {
   try {
-    const { itemId, size, color } = req.body
+    const { itemId, size, color, quantity = 1 } = req.body
     if (!itemId || !size || !color) {
       return res.status(400).json({ success: false, message: "Missing required fields" })
     }
@@ -24,11 +24,11 @@ export const addtocart = async (req, res) => {
     let currentQty = cartdata[cartKey] || 0
 
     const stock = product.numberofproducts?.[String(size)] || 0
-    if (currentQty + 1 > stock) {
-      return res.status(400).json({ success: false, message: `Only ${stock} items available in stock for size ${size}` })
+    if (currentQty + quantity > stock) {
+      return res.status(400).json({ success: false, message: `Only ${stock} items available in stock. You already have ${currentQty} in cart.` })
     }
 
-    cartdata[cartKey] = currentQty + 1
+    cartdata[cartKey] = currentQty + quantity
 
     await User.findByIdAndUpdate(req.userId, { cartdata })
     return res.status(201).json({ success: true, message: "Added to cart successfully" })

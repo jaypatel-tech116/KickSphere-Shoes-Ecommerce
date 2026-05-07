@@ -419,7 +419,7 @@ export default function ProductDetail() {
             </div>
 
             {/* Submit review */}
-            <div className="bg-[#111] border border-[#1F1F1F] rounded-2xl p-5 sm:p-6 w-full md:self-start">
+            <div className="bg-[#111] border border-[#1F1F1F] rounded-2xl p-5 sm:p-6 w-full md:self-start w-full">
               <h3 className="font-[Bebas_Neue] text-xl text-white tracking-wide mb-4">WRITE A REVIEW</h3>
               {!isAuthenticated ? (
                 <div className="text-center py-6">
