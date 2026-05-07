@@ -14,23 +14,28 @@ const razorpayInstance = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 })
 
-// Helper: decrement stock after order is placed
+// Helper: decrement stock after order is placed (Optimized for speed)
 async function decrementStock(items) {
-  for (const item of items) {
-    const sizeKey = String(item.size);
-    const productId = item.productId || item._id;
-    const qty = item.quantity || item.quentity || 0;
-    const updated = await Product.findOneAndUpdate(
-      { _id: productId, [`numberofproducts.${sizeKey}`]: { $gte: qty } },
-      { $inc: { [`numberofproducts.${sizeKey}`]: -qty, soldCount: qty } },
-      { new: true }
-    );
-    if (!updated) {
-      logger.error(`Insufficient stock for product ${productId} size ${sizeKey}`);
-    }
-    if (updated && updated.soldCount >= 5 && !updated.bestseller) {
-      await Product.findByIdAndUpdate(productId, { bestseller: true });
-    }
+  try {
+    const updates = items.map(async (item) => {
+      const sizeKey = String(item.size);
+      const productId = item.productId || item._id;
+      const qty = item.quantity || item.quentity || 0;
+      
+      const updated = await Product.findOneAndUpdate(
+        { _id: productId, [`numberofproducts.${sizeKey}`]: { $gte: qty } },
+        { $inc: { [`numberofproducts.${sizeKey}`]: -qty, soldCount: qty } },
+        { new: true }
+      );
+      
+      if (updated && updated.soldCount >= 5 && !updated.bestseller) {
+        await Product.findByIdAndUpdate(productId, { bestseller: true });
+      }
+    });
+    
+    await Promise.all(updates);
+  } catch (err) {
+    logger.error("Stock update background task error:", err);
   }
 }
 
@@ -64,11 +69,12 @@ export const Placeorder = async (req, res) => {
       date: Date.now()
     });
 
-    await decrementStock(items);
-    await User.findByIdAndUpdate(userId, { cartdata: {} });
-    await sendOrderEmail(userId, neworder);
+    // Run these in background to return response immediately
+    decrementStock(items);
+    User.findByIdAndUpdate(userId, { cartdata: {} }).exec();
+    sendOrderEmail(userId, neworder);
 
-    return res.status(201).json({ message: 'Order placed' });
+    return res.status(201).json({ message: 'Order placed', orderId: neworder._id });
   } catch (error) {
     logger.error("PLACE ORDER ERROR:", error);
     return res.status(400).json({ message: 'Error placing order', detail: error.message });
@@ -196,11 +202,12 @@ export const verifyrazorpay = async (req, res) => {
       date: Date.now(),
     });
 
-    await decrementStock(items);
-    await User.findByIdAndUpdate(userId, { cartdata: {} });
-    await sendOrderEmail(userId, neworder);
+    // Run secondary tasks in background
+    decrementStock(items);
+    User.findByIdAndUpdate(userId, { cartdata: {} }).exec();
+    sendOrderEmail(userId, neworder);
 
-    return res.status(200).json({ success: true, message: "Payment successful" });
+    return res.status(200).json({ success: true, message: "Payment successful", orderId: neworder._id });
   } catch (error) {
     logger.error("verifyrazorpay error:", error);
     return res.status(500).json({ message: "Payment verification error" });
