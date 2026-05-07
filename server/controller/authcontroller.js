@@ -4,8 +4,8 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 const safeCompare = (a, b) => {
-  if (a.length !== b.length) return false;
-  return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+    if (a.length !== b.length) return false;
+    return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
 };
 import { genToken, genToken1 } from "../config/token.js";
 import validator from "validator"
@@ -43,7 +43,7 @@ export const register = async (req, res) => {
         }
         const hashpass = await bcrypt.hash(password, 10)
         const user = await User.create({ name, email, password: hashpass, accountverify: false })
-        
+
         return res.status(201).json({ message: "Registration successful. Please verify OTP.", email: user.email })
     } catch (error) {
         logger.error("Registration error:", error);
@@ -59,7 +59,7 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" })
         }
-        if(user.accountverify === false){
+        if (user.accountverify === false) {
             return res.status(404).json({ message: "User not verified" })
         }
         const checkpass = await bcrypt.compare(password, user.password)
@@ -67,7 +67,14 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "password is wrong" })
         }
         const token = await genToken(user._id)
-        res.cookie("token", token, getCookieOptions(7 * 24 * 60 * 60 * 1000))
+        // Update your cookie settings for production
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,      // MUST be true for cross-site cookies
+            sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
         return res.status(200).json({ message: "login sucessful" })
     } catch (error) {
         logger.error("Login error:", error);
@@ -77,7 +84,14 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        res.clearCookie("token", getCookieOptions(7 * 24 * 60 * 60 * 1000))
+        // Update your cookie settings for production
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,      // MUST be true for cross-site cookies
+            sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
         return res.status(200).json({ message: "logout successful" })
     } catch (error) {
         return res.status(500).json({ message: "logout error" })
@@ -113,7 +127,14 @@ export const glogin = async (req, res) => {
         }
 
         const token = await genToken(user._id)
-        res.cookie("token", token, getCookieOptions(7 * 24 * 60 * 60 * 1000))
+        // Update your cookie settings for production
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,      // MUST be true for cross-site cookies
+            sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
         return res.status(200).json({ success: true, user })
     } catch (error) {
         logger.error("Google login error:", error);
@@ -126,7 +147,14 @@ export const Adminlogin = async (req, res) => {
         const { email, password } = req.body;
         if (email === process.env.ADMIN_EMAIL && safeCompare(password, process.env.ADMIN_PASS)) {
             const token = await genToken1(email)
-            res.cookie("token", token, getCookieOptions(1 * 24 * 60 * 60 * 1000))
+            // Update your cookie settings for production
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: true,      // MUST be true for cross-site cookies
+                sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+
             return res.status(200).json(token)
         }
         return res.status(400).json({ message: "Login error for admin" })
@@ -289,7 +317,14 @@ export const otpverify = async (req, res) => {
         }
 
         const token = await genToken(user._id);
-        res.cookie("token", token, getCookieOptions(7 * 24 * 60 * 60 * 1000));
+        // Update your cookie settings for production
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,      // MUST be true for cross-site cookies
+            sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
 
         return res.status(200).json({
             message: "Verification successful",

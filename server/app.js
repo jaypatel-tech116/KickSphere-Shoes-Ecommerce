@@ -28,14 +28,20 @@ const allowedOrigins = [
   process.env.ADMIN_ORIGIN,
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// Around line 32 in app.js
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // This MUST be true
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 
 // Security: Helmet for secure headers
 app.use(helmet({
@@ -77,11 +83,11 @@ app.get('/health', (req, res) => {
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   const message = err.message || "Internal Server Error";
-  
+
   if (process.env.NODE_ENV === 'production') {
     return res.status(status).json({ success: false, message: "Something went wrong" });
   }
-  
+
   return res.status(status).json({ success: false, message, stack: err.stack });
 });
 
