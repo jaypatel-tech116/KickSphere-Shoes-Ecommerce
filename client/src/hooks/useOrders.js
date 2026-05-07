@@ -18,8 +18,9 @@ export function usePlaceOrder() {
   return useMutation({
     mutationFn: (data) => api.post('/order/placeorder', data),
     onSuccess: () => {
-      // Immediately refresh the orders list after placing an order
+      // Refresh orders and clear cart cache
       queryClient.invalidateQueries({ queryKey: ['userOrders'] })
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
   })
 }
@@ -35,8 +36,9 @@ export function useVerifyRazorpay() {
   return useMutation({
     mutationFn: (data) => api.post('/order/verifyrazorpay', data),
     onSuccess: () => {
-      // Immediately refresh the orders list after Razorpay payment
+      // Refresh orders and clear cart cache
       queryClient.invalidateQueries({ queryKey: ['userOrders'] })
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
   })
 }

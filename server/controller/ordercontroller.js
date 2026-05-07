@@ -69,9 +69,11 @@ export const Placeorder = async (req, res) => {
       date: Date.now()
     });
 
-    // Run these in background to return response immediately
+    // Clear cart IMMEDIATELY (Awaited to prevent race conditions)
+    await User.findByIdAndUpdate(userId, { cartdata: {} });
+
+    // Run slow tasks in background
     decrementStock(items);
-    User.findByIdAndUpdate(userId, { cartdata: {} }).exec();
     sendOrderEmail(userId, neworder);
 
     return res.status(201).json({ message: 'Order placed', orderId: neworder._id });
@@ -202,9 +204,11 @@ export const verifyrazorpay = async (req, res) => {
       date: Date.now(),
     });
 
+    // Clear cart IMMEDIATELY
+    await User.findByIdAndUpdate(userId, { cartdata: {} });
+
     // Run secondary tasks in background
     decrementStock(items);
-    User.findByIdAndUpdate(userId, { cartdata: {} }).exec();
     sendOrderEmail(userId, neworder);
 
     return res.status(200).json({ success: true, message: "Payment successful", orderId: neworder._id });
