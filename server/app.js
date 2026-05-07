@@ -25,8 +25,8 @@ const allowedOrigins = [
   "http://localhost:5176",
   "http://127.0.0.1:5173",
   "http://127.0.0.1:5174",
-  process.env.CLIENT_ORIGIN,
-  process.env.ADMIN_ORIGIN,
+  process.env.CLIENT_ORIGIN?.replace(/\/$/, ""),
+  process.env.ADMIN_ORIGIN?.replace(/\/$/, ""),
 ].filter(Boolean);
 
 // Around line 32 in app.js
@@ -38,9 +38,9 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true, // This MUST be true
+  credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
 }));
 
 
