@@ -16,6 +16,7 @@ import compression from "compression";
 dns.setDefaultResultOrder("ipv4first");
 
 const app = express();
+app.set("trust proxy", 1);
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -46,7 +47,7 @@ app.use(cors({
 // Security: Helmet for secure headers
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
-  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+  crossOriginOpenerPolicy: false,
   crossOriginEmbedderPolicy: false
 }));
 
