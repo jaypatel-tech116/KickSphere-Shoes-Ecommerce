@@ -12,10 +12,11 @@ export const useCartStore = create((set, get) => ({
     const existingIdx = items.findIndex(
       (i) => i.itemId === item.itemId && i.size === item.size && i.color === item.color
     )
+    const addQty = item.quantity || 1
     if (existingIdx > -1) {
-      items[existingIdx] = { ...items[existingIdx], quantity: items[existingIdx].quantity + 1 }
+      items[existingIdx] = { ...items[existingIdx], quantity: items[existingIdx].quantity + addQty }
     } else {
-      items.push({ ...item, quantity: 1 })
+      items.push({ ...item, quantity: addQty })
     }
     set({ items, count: items.reduce((acc, i) => acc + i.quantity, 0) })
   },
