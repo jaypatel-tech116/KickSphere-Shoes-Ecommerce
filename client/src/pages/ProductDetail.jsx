@@ -130,18 +130,18 @@ export default function ProductDetail() {
   ]
 
   return (
-    <div className="bg-black min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-8">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
+    <div className="bg-black min-h-screen overflow-x-hidden w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 w-full">
 
           {/* ── Image Gallery ── */}
-          <div className="space-y-4">
+          <div className="w-full min-w-0 space-y-3">
             {/* Main image */}
             <motion.div
               key={mainImg}
               initial={{ opacity: 0.7 }}
               animate={{ opacity: 1 }}
-              className="aspect-square bg-[#111] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#1F1F1F] relative group cursor-zoom-in"
+              className="w-full aspect-square bg-[#111] rounded-2xl overflow-hidden border border-[#1F1F1F] relative group cursor-zoom-in"
               onClick={() => setIsZoomed(true)}
             >
               <img
@@ -150,47 +150,58 @@ export default function ProductDetail() {
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 onError={(e) => { e.target.src = '/Small_Logo.png'; e.target.className = 'w-full h-full object-contain p-12 opacity-30' }}
               />
-              {/* Zoom hint — hidden on touch devices via pointer:coarse */}
-              <div className="hidden sm:flex absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity border border-white/10">
-                <Search size={12} /> Tap to Zoom
-              </div>
-              {/* Mobile nav arrows (visible only when multiple images) */}
-              {images.length > 1 && (
-                <>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setMainImg(i => Math.max(0, i - 1)) }}
-                    className={`sm:hidden absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/60 rounded-full flex items-center justify-center text-white border border-white/10 transition-opacity ${mainImg === 0 ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}
-                  >
-                    <ChevronLeft size={16} />
-                  </button>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setMainImg(i => Math.min(images.length - 1, i + 1)) }}
-                    className={`sm:hidden absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/60 rounded-full flex items-center justify-center text-white border border-white/10 transition-opacity ${mainImg === images.length - 1 ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}
-                  >
-                    <ChevronRight size={16} />
-                  </button>
-                  {/* Dot indicators for mobile */}
-                  <div className="sm:hidden absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                    {images.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={(e) => { e.stopPropagation(); setMainImg(i) }}
-                        className={`w-1.5 h-1.5 rounded-full transition-all ${mainImg === i ? 'bg-[#E8000D] w-4' : 'bg-white/40'}`}
-                      />
-                    ))}
-                  </div>
-                </>
+
+              {/* Prev / Next arrows — mobile/tablet, hidden on lg */}
+              {images.length > 1 && mainImg > 0 && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); setMainImg(i => Math.max(0, i - 1)) }}
+                  className="lg:hidden absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/70 rounded-full flex items-center justify-center text-white border border-white/10"
+                >
+                  <ChevronLeft size={16} />
+                </button>
               )}
+              {images.length > 1 && mainImg < images.length - 1 && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); setMainImg(i => Math.min(images.length - 1, i + 1)) }}
+                  className="lg:hidden absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/70 rounded-full flex items-center justify-center text-white border border-white/10"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              )}
+
+              {/* Dot indicators — mobile/tablet */}
+              {images.length > 1 && (
+                <div className="lg:hidden absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={(e) => { e.stopPropagation(); setMainImg(i) }}
+                      style={{
+                        width: mainImg === i ? '16px' : '6px',
+                        height: '6px',
+                        borderRadius: '9999px',
+                        background: mainImg === i ? '#E8000D' : 'rgba(255,255,255,0.4)',
+                        transition: 'all 0.3s'
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Zoom hint — desktop only */}
+              <div className="hidden lg:flex absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity border border-white/10">
+                <Search size={12} /> Click to Zoom
+              </div>
             </motion.div>
 
-            {/* Thumbnails — hidden on mobile (use arrows instead) */}
+            {/* Thumbnails — desktop only */}
             {images.length > 1 && (
-              <div className="hidden sm:flex justify-start gap-3 overflow-x-auto pb-1 scrollbar-thin">
+              <div className="hidden lg:flex gap-3 overflow-x-auto pb-1">
                 {images.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setMainImg(i)}
-                    className={`flex-none w-20 h-20 lg:w-24 lg:h-24 rounded-xl overflow-hidden border-2 transition-all ${mainImg === i ? 'border-[#E8000D] scale-105' : 'border-[#1F1F1F] opacity-60 hover:opacity-100 hover:border-[#E8000D]/50'}`}
+                    className={`flex-none w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${mainImg === i ? 'border-[#E8000D] scale-105' : 'border-[#1F1F1F] opacity-60 hover:opacity-100 hover:border-[#E8000D]/50'}`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.src = '/Small_Logo.png'; e.target.className = 'w-full h-full object-contain p-2 opacity-30' }} />
                   </button>
@@ -252,12 +263,13 @@ export default function ProductDetail() {
                         key={size}
                         onClick={() => !oos && setSelectedSize(size)}
                         disabled={oos}
-                        className={`relative py-2.5 rounded-lg text-sm font-[Barlow] font-semibold border-2 transition-all ${oos
+                        className={`relative py-2.5 rounded-lg text-sm font-[Barlow] font-semibold border-2 transition-all ${
+                          oos
                             ? 'border-[#1F1F1F] text-[#333] cursor-not-allowed'
                             : selectedSize === size
                               ? 'border-[#E8000D] bg-[#E8000D]/10 text-white'
                               : 'border-[#1F1F1F] text-[#A0A0A0] hover:border-[#E8000D]/50 hover:text-white'
-                          }`}
+                        }`}
                       >
                         {size}
                         {!oos && stock < 3 && (
@@ -367,7 +379,7 @@ export default function ProductDetail() {
                   <p className="text-[#A0A0A0] text-xs font-[Barlow] mt-1">{product.ratings?.length || 0} reviews</p>
                 </div>
                 <div className="flex-1 min-w-0 space-y-1.5 pt-1">
-                  {[5, 4, 3, 2, 1].map((s) => {
+                  {[5,4,3,2,1].map((s) => {
                     const count = product.ratings?.filter((r) => Math.round(r.rating) === s).length || 0
                     const pct = product.ratings?.length ? (count / product.ratings.length) * 100 : 0
                     return (
