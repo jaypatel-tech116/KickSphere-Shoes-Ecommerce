@@ -87,7 +87,7 @@ export default function ProductDetail() {
   const handleAddToCart = () => {
     if (!isAuthenticated) { toast.error('Please login first'); navigate('/auth'); return }
     if (!selectedSize) { toast.error('Please select a size'); return }
-    addToCartMutation.mutate({ itemId: product._id, size: selectedSize, color: selectedColor })
+    addToCartMutation.mutate({ itemId: product._id, size: selectedSize, color: selectedColor, quantity: qty })
   }
 
   const handleRate = async () => {
@@ -117,7 +117,7 @@ export default function ProductDetail() {
 
   return (
     <div className="bg-black min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           {/* Image Gallery */}
           <div className="space-y-6">
