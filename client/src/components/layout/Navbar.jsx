@@ -89,17 +89,17 @@ export default function Navbar() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3">
-              <button onClick={() => setSearchOpen(!searchOpen)} className="text-[#A0A0A0] hover:text-white transition-colors p-1">
+            <div className="flex items-center gap-1.5 sm:gap-3">
+              <button onClick={() => setSearchOpen(!searchOpen)} className="text-[#A0A0A0] hover:text-white transition-colors p-1.5">
                 <Search size={20} />
               </button>
-              <Link to="/wishlist" className="text-[#A0A0A0] hover:text-white transition-colors p-1">
+              <Link to="/wishlist" className="hidden xs:block text-[#A0A0A0] hover:text-white transition-colors p-1.5">
                 <Heart size={20} />
               </Link>
-              <Link to="/cart" className="relative text-[#A0A0A0] hover:text-white transition-colors p-1">
+              <Link to="/cart" className="relative text-[#A0A0A0] hover:text-white transition-colors p-1.5">
                 <ShoppingCart size={20} />
                 {count > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#E8000D] text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  <span className="absolute top-0.5 right-0.5 bg-[#E8000D] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                     {count > 9 ? '9+' : count}
                   </span>
                 )}

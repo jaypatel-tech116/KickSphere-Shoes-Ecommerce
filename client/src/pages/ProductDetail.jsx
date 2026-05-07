@@ -132,12 +132,12 @@ export default function ProductDetail() {
                 onError={(e) => { e.target.src = '/Small_Logo.png'; e.target.className = 'w-full h-full object-contain p-12 opacity-30' }}
               />
             </motion.div>
-            <div className="flex gap-3">
+            <div className="flex justify-center sm:justify-start gap-3 overflow-x-auto pb-2 no-scrollbar">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setMainImg(i)}
-                  className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${mainImg === i ? 'border-[#E8000D]' : 'border-[#1F1F1F] hover:border-[#E8000D]/50'}`}
+                  className={`flex-none w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${mainImg === i ? 'border-[#E8000D]' : 'border-[#1F1F1F] hover:border-[#E8000D]/50'}`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.src = '/Small_Logo.png'; e.target.className = 'w-full h-full object-contain p-2 opacity-30' }} />
                 </button>
