@@ -46,7 +46,7 @@ export const register = async (req, res) => {
         
         return res.status(201).json({ message: "Registration successful. Please verify OTP.", email: user.email })
     } catch (error) {
-        logger.info("register error", error);
+        logger.error("Registration error:", error);
         return res.status(500).json({ message: "register error" })
     }
 }
@@ -70,7 +70,7 @@ export const login = async (req, res) => {
         res.cookie("token", token, getCookieOptions(7 * 24 * 60 * 60 * 1000))
         return res.status(200).json({ message: "login sucessful" })
     } catch (error) {
-        logger.info("login error");
+        logger.error("Login error:", error);
         return res.status(500).json({ message: `login error ${error}` })
     }
 }
@@ -201,7 +201,7 @@ export const resetotpverify = async (req, res) => {
             message: "reset password successfully"
         })
     } catch (error) {
-        logger.error(error);
+        logger.error("OTP verification error:", error);
         return res.status(500).json({ message: "OTP verification failed" });
     }
 }
@@ -296,7 +296,7 @@ export const otpverify = async (req, res) => {
             user
         });
     } catch (error) {
-        logger.error(error);
+        logger.error("Verification error:", error);
         return res.status(500).json({ message: "Verification error" });
     }
 };

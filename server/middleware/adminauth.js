@@ -17,7 +17,7 @@ try {
     req.Adminemail = verifytoken.email
     next()
 } catch (error) {
-    logger.info("error in token verify admin")
+    logger.error("Admin token verification error:", error);
     return res.status(401).json({message:"Unauthorized: token verification failed"})
 }
 }

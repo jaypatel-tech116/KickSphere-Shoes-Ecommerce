@@ -66,7 +66,7 @@ export const addproduct = async (req, res) => {
       product,
     });
   } catch (error) {
-    logger.info(error);
+    logger.error("Add product error:", error);
     return res.status(500).json({
       success: false,
       message: "Add product error",
@@ -155,7 +155,7 @@ export const updateproduct = async (req, res) => {
 
   } catch (error) {
 
-    logger.info(error);
+    logger.error("Update product error:", error);
 
     return res.status(500).json({
       success: false,
@@ -181,7 +181,7 @@ export const listproduct = async (req, res) => {
       pagination: { page, limit, total, pages: Math.ceil(total / limit) }
     });
   } catch (error) {
-    logger.info(error);
+    logger.error("List product error:", error);
     return res.status(500).json({
       success: false,
       message: "list product error",
@@ -197,7 +197,7 @@ export const removeproduct = async (req, res) => {
     const product = await Product.findByIdAndDelete(id)
     return res.status(200).json({ success: true, message: "Product removed successfully" });
   } catch (error) {
-    logger.info(error, "errro in remove");
+    logger.error("Remove product error:", error);
     return res.status(500).json({
       success: false,
       message: "remove product error",
