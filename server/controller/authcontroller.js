@@ -20,12 +20,12 @@ const hasEmailConfig = () => {
 };
 
 const getCookieOptions = (maxAge) => {
-    const isProduction = process.env.NODE_ENV === "production";
     return {
         httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? "None" : "Lax",
-        maxAge
+        secure: true, 
+        sameSite: "None",
+        maxAge,
+        path: "/"
     };
 };
 export const register = async (req, res) => {
@@ -52,7 +52,6 @@ export const register = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
@@ -67,13 +66,7 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "password is wrong" })
         }
         const token = await genToken(user._id)
-        // Update your cookie settings for production
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,      // MUST be true for cross-site cookies
-            sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+        res.cookie("token", token, getCookieOptions(7 * 24 * 60 * 60 * 1000))
 
         return res.status(200).json({ message: "login sucessful" })
     } catch (error) {
@@ -84,14 +77,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        // Update your cookie settings for production
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,      // MUST be true for cross-site cookies
-            sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
-
+        res.clearCookie("token", getCookieOptions(0))
         return res.status(200).json({ message: "logout successful" })
     } catch (error) {
         return res.status(500).json({ message: "logout error" })
@@ -127,13 +113,7 @@ export const glogin = async (req, res) => {
         }
 
         const token = await genToken(user._id)
-        // Update your cookie settings for production
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,      // MUST be true for cross-site cookies
-            sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+        res.cookie("token", token, getCookieOptions(7 * 24 * 60 * 60 * 1000))
 
         return res.status(200).json({ success: true, user })
     } catch (error) {
@@ -147,14 +127,7 @@ export const Adminlogin = async (req, res) => {
         const { email, password } = req.body;
         if (email === process.env.ADMIN_EMAIL && safeCompare(password, process.env.ADMIN_PASS)) {
             const token = await genToken1(email)
-            // Update your cookie settings for production
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: true,      // MUST be true for cross-site cookies
-                sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-            });
-
+            res.cookie("token", token, getCookieOptions(1 * 24 * 60 * 60 * 1000))
             return res.status(200).json(token)
         }
         return res.status(400).json({ message: "Login error for admin" })
@@ -317,13 +290,7 @@ export const otpverify = async (req, res) => {
         }
 
         const token = await genToken(user._id);
-        // Update your cookie settings for production
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,      // MUST be true for cross-site cookies
-            sameSite: 'none',  // MUST be 'none' for Render <-> Vercel
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+        res.cookie("token", token, getCookieOptions(7 * 24 * 60 * 60 * 1000));
 
 
         return res.status(200).json({
