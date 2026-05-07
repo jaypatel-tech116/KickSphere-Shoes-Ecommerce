@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, ShoppingCart, ChevronDown, Star, Truck, RefreshCw, Shield } from 'lucide-react'
+import { Heart, ShoppingCart, ChevronDown, Star, Truck, RefreshCw, Shield, Search, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useSingleProduct } from '../hooks/useProducts'
 import { useCart } from '../hooks/useCart'
@@ -42,6 +42,8 @@ export default function ProductDetail() {
     },
     enabled: isAuthenticated
   })
+
+  const [isZoomed, setIsZoomed] = useState(false)
 
   const product = data?.product || data
 
@@ -116,28 +118,32 @@ export default function ProductDetail() {
   return (
     <div className="bg-black min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           {/* Image Gallery */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             <motion.div
               key={mainImg}
               initial={{ opacity: 0.7 }}
               animate={{ opacity: 1 }}
-              className="aspect-square bg-[#111] rounded-2xl overflow-hidden border border-[#1F1F1F] relative group"
+              className="aspect-square bg-[#111] rounded-3xl overflow-hidden border border-[#1F1F1F] relative group cursor-zoom-in"
+              onClick={() => setIsZoomed(true)}
             >
               <img
                 src={images[mainImg]}
                 alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 onError={(e) => { e.target.src = '/Small_Logo.png'; e.target.className = 'w-full h-full object-contain p-12 opacity-30' }}
               />
+              <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity border border-white/10">
+                <Search size={12} /> Tap to Zoom
+              </div>
             </motion.div>
-            <div className="flex justify-center sm:justify-start gap-3 overflow-x-auto pb-2 no-scrollbar">
+            <div className="flex justify-center lg:justify-start gap-4 overflow-x-auto pb-2 no-scrollbar px-2">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setMainImg(i)}
-                  className={`flex-none w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${mainImg === i ? 'border-[#E8000D]' : 'border-[#1F1F1F] hover:border-[#E8000D]/50'}`}
+                  className={`flex-none w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 transition-all ${mainImg === i ? 'border-[#E8000D] scale-105' : 'border-[#1F1F1F] opacity-60 hover:opacity-100 hover:border-[#E8000D]/50'}`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.src = '/Small_Logo.png'; e.target.className = 'w-full h-full object-contain p-2 opacity-30' }} />
                 </button>
@@ -395,6 +401,52 @@ export default function ProductDetail() {
           </div>
         )}
       </div>
+
+      {/* Premium Zoom Modal */}
+      <AnimatePresence>
+        {isZoomed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-12"
+            onClick={() => setIsZoomed(false)}
+          >
+            <button
+              onClick={() => setIsZoomed(false)}
+              className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors"
+            >
+              <X size={32} />
+            </button>
+            
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="max-w-5xl w-full aspect-square md:aspect-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={images[mainImg]}
+                alt={product.name}
+                className="w-full h-full object-contain rounded-2xl shadow-2xl shadow-red-500/10"
+              />
+            </motion.div>
+            
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 bg-black/50 backdrop-blur-xl p-2 rounded-2xl border border-white/10">
+              {images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => { e.stopPropagation(); setMainImg(i) }}
+                  className={`w-12 h-12 rounded-lg overflow-hidden border-2 transition-all ${mainImg === i ? 'border-[#E8000D]' : 'border-transparent opacity-50'}`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
