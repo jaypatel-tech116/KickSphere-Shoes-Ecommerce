@@ -143,36 +143,36 @@ export default function Collection() {
     <div className="bg-black min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="font-[Bebas_Neue] text-4xl text-white tracking-wide">ALL COLLECTION</h1>
-            <p className="text-[#A0A0A0] font-[Barlow] text-sm mt-0.5">{filtered.length} Products</p>
+            <h1 className="font-[Bebas_Neue] text-4xl sm:text-5xl text-white tracking-wide">ALL COLLECTION</h1>
+            <p className="text-[#A0A0A0] font-[Barlow] text-sm mt-0.5">{filtered.length} Products Found</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Sort */}
-            <div className="relative hidden md:block">
+            <div className="relative hidden sm:block">
               <select
                 value={`${filters.sortBy}-${filters.order}`}
                 onChange={(e) => {
                   const opt = SORT_OPTIONS.find((o) => `${o.value}-${o.order}` === e.target.value)
                   if (opt) { setFilter('sortBy', opt.value); setFilter('order', opt.order); setSortLabel(opt.label) }
                 }}
-                className="bg-[#111] border border-[#1F1F1F] text-white font-[Barlow] text-sm px-4 py-2 rounded-lg outline-none appearance-none pr-8 cursor-pointer"
+                className="bg-[#111] border border-[#1F1F1F] text-white font-[Barlow] text-sm px-4 py-2.5 rounded-xl outline-none appearance-none pr-10 cursor-pointer hover:border-[#E8000D]/30 transition-all"
               >
                 {SORT_OPTIONS.map((o) => (
                   <option key={`${o.value}-${o.order}`} value={`${o.value}-${o.order}`}>{o.label}</option>
                 ))}
               </select>
-              <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#A0A0A0] pointer-events-none" />
+              <ChevronDown size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A0A0A0] pointer-events-none" />
             </div>
             {/* Mobile filter */}
-            <button onClick={() => setDrawerOpen(true)} className="md:hidden bg-[#111] border border-[#1F1F1F] text-white px-3 py-2 rounded-lg flex items-center gap-2 font-[Barlow] text-sm">
+            <button onClick={() => setDrawerOpen(true)} className="md:hidden bg-[#111] border border-[#1F1F1F] text-white px-4 py-2.5 rounded-xl flex items-center gap-2 font-[Barlow] text-sm hover:bg-[#1A1A1A] transition-all">
               <SlidersHorizontal size={14} /> Filters
             </button>
             {/* Infinite toggle */}
             <button
               onClick={() => setInfiniteMode(!infiniteMode)}
-              className={`text-xs font-[Barlow] font-semibold px-3 py-2 rounded-lg border transition-all ${infiniteMode ? 'bg-[#E8000D] border-[#E8000D] text-white' : 'border-[#1F1F1F] text-[#A0A0A0] hover:text-white'}`}
+              className={`text-xs font-[Barlow] font-semibold px-4 py-2.5 rounded-xl border transition-all ${infiniteMode ? 'bg-[#E8000D] border-[#E8000D] text-white' : 'border-[#1F1F1F] text-[#A0A0A0] hover:text-white hover:border-[#E8000D]/30'}`}
             >
               {infiniteMode ? '∞ Infinite' : '# Pages'}
             </button>

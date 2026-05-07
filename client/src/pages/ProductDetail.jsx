@@ -180,8 +180,8 @@ export default function ProductDetail() {
             {/* Sizes */}
             {product.sizes?.length > 0 && (
               <div>
-                <p className="text-[#A0A0A0] font-[Barlow] text-sm mb-2">Size (UK): {!selectedSize && <span className="text-[#E8000D]">Please select</span>}</p>
-                <div className="grid grid-cols-6 gap-2">
+                <p className="text-[#A0A0A0] font-[Barlow] text-sm mb-2">Size (UK): {!selectedSize && <span className="text-[#E8000D] text-xs ml-2 italic">Please select to add to cart</span>}</p>
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                   {product.sizes.map((size) => {
                     const stock = product.numberofproducts?.[String(size)] || 0
                     const oos = stock === 0

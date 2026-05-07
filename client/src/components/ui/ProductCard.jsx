@@ -92,9 +92,9 @@ export default function ProductCard({ product }) {
             <Heart size={14} className={wishlisted ? 'fill-white' : ''} />
           </motion.button>
           
-          {/* Quick view overlay */}
+          {/* Quick view overlay - Desktop Only */}
           <motion.div
-            className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            className="absolute inset-0 bg-black/40 hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             onClick={(e) => { e.stopPropagation(); setQuickViewOpen(true) }}
           >
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs px-4 py-2 rounded-full flex items-center gap-1.5 font-[Barlow] hover:bg-white hover:text-black transition-all">

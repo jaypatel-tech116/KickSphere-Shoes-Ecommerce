@@ -70,7 +70,7 @@ export default function TopRatedSection() {
             >
               <button
                 onClick={() => setQuickViewProduct(topRated)}
-                className="bg-[#E8000D] hover:bg-[#FF1A1A] text-white font-[Barlow] font-bold px-8 py-4 rounded-xl flex items-center gap-2 transition-all glow-red-sm"
+                className="hidden md:flex bg-[#E8000D] hover:bg-[#FF1A1A] text-white font-[Barlow] font-bold px-8 py-4 rounded-xl items-center gap-2 transition-all glow-red-sm"
               >
                 <Eye size={20} /> QUICK VIEW
               </button>
@@ -90,7 +90,7 @@ export default function TopRatedSection() {
             viewport={{ once: true }}
             className="flex-1 w-full max-w-lg"
           >
-            <div className="relative group cursor-pointer" onClick={() => setQuickViewProduct(topRated)}>
+            <div className="relative group cursor-pointer" onClick={() => { if(window.innerWidth > 768) setQuickViewProduct(topRated) }}>
               <div className="absolute inset-0 bg-[#E8000D] blur-[40px] opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-3xl" />
               <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-[40px] p-8 relative overflow-hidden group-hover:border-[#E8000D]/30 transition-all duration-500">
                 <img
