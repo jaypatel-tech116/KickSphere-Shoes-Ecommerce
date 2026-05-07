@@ -24,7 +24,11 @@ export default function Login() {
       toast.success('Welcome, Admin!')
       navigate('/')
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid credentials')
+      if (err.response?.status === 404) {
+        toast.error('API Error (404): Please refresh your browser (Ctrl+F5)')
+      } else {
+        toast.error(err.response?.data?.message || 'Invalid credentials')
+      }
     } finally { setLoading(false) }
   }
 
