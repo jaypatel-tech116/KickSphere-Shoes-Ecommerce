@@ -24,6 +24,7 @@ const getCookieOptions = (maxAge) => {
         httpOnly: true,
         secure: true, 
         sameSite: "None",
+        partitioned: true,
         maxAge,
         path: "/"
     };
