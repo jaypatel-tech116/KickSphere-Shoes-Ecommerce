@@ -1,4 +1,3 @@
-const LOGO_URL = "https://res.cloudinary.com/jay-patel/image/upload/Small_Logo_wrf1ms.png";
 const BASE_URL = process.env.FRONTEND_URL || "https://kicksphere-shoes-ecommerce.vercel.app";
 
 const baseTemplate = (content) => `
@@ -11,6 +10,8 @@ const baseTemplate = (content) => `
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #000; margin: 0; padding: 0; color: #fff; }
     .container { max-width: 600px; margin: 0 auto; background-color: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 12px; overflow: hidden; margin-top: 20px; margin-bottom: 20px; }
     .header { padding: 40px 20px; text-align: center; background-color: #000000; border-bottom: 1px solid #1f1f1f; }
+    .logo-text { font-size: 32px; font-weight: 900; color: #fff; letter-spacing: -1px; text-transform: uppercase; text-decoration: none; }
+    .logo-accent { color: #e8000d; }
     .content { padding: 40px 30px; line-height: 1.6; text-align: center; }
     .footer { padding: 30px; text-align: center; border-top: 1px solid #1f1f1f; font-size: 12px; color: #a0a0a0; background-color: #050505; }
     .button { display: inline-block; padding: 14px 35px; background-color: #e8000d; color: #fff !important; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 25px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(232, 0, 13, 0.3); }
@@ -26,8 +27,8 @@ const baseTemplate = (content) => `
 <body>
   <div class="container">
     <div class="header">
-      <a href="${BASE_URL}" target="_blank" style="text-decoration: none;">
-        <img src="${LOGO_URL}" alt="KickSphere" width="150" border="0" style="display: block; margin: 0 auto; border: none; outline: none; text-decoration: none;">
+      <a href="${BASE_URL}" class="logo-text">
+        KICK<span class="logo-accent">SPHERE</span>
       </a>
     </div>
     <div class="content">
@@ -71,7 +72,7 @@ export const otpEmail = (otp, type = "verification") => baseTemplate(`
 
   <p>This code will expire in 10 minutes. If you didn't request this, please ignore this email.</p>
   <div style="margin-top: 20px;">
-    <p style="font-size: 13px;">Need help? <a href="mailto:support@kicksphere.com" style="color: #e8000d;">Contact Support</a></p>
+    <p style="font-size: 13px;">Need help? <a href="mailto:jaypatel010126@gmail.com" style="color: #e8000d;">Contact Support</a></p>
   </div>
 `);
 
