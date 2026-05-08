@@ -43,7 +43,7 @@ connectDB().then(async () => {
   }
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   logger.info(`KickSphere server running on port ${port} [${process.env.NODE_ENV || 'development'}]`);
 });
 

@@ -1,4 +1,3 @@
-import dns from "node:dns";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -13,7 +12,7 @@ import wishlistRoute from "./routes/wishlist-route.js";
 import mongoSanitize from "express-mongo-sanitize";
 import compression from "compression";
 
-dns.setDefaultResultOrder("ipv4first");
+
 
 const app = express();
 app.set("trust proxy", 1);
