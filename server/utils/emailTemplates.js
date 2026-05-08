@@ -1,5 +1,5 @@
 const LOGO_URL = "https://res.cloudinary.com/jay-patel/image/upload/v1776829338/jayma8jlxapensoy6c1w.jpg";
-const BASE_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const BASE_URL = process.env.FRONTEND_URL || "https://kicksphere-shoes-ecommerce.vercel.app";
 
 const baseTemplate = (content) => `
 <!DOCTYPE html>

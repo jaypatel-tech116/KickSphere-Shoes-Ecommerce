@@ -43,7 +43,7 @@ async function sendOrderEmail(userId, order) {
   try {
     const user = await User.findById(userId);
     if (user && user.email) {
-      console.log(`[ORDER DEBUG] Sending confirmation to: ${user.email}`);
+      console.log(`[ORDER] Sending confirmation for Order ${order._id} to User: ${user.email} (ID: ${userId})`);
       await transporter.sendMail({
         to: user.email,
         subject: "Your KickSphere Order is Confirmed!",
