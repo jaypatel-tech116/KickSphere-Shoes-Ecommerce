@@ -1,4 +1,4 @@
-const LOGO_URL = "https://res.cloudinary.com/jay-patel/image/upload/v1778223309/logo_en8fwg.png";
+const LOGO_URL = "https://res.cloudinary.com/jay-patel/image/upload/Small_Logo_wrf1ms.png";
 const BASE_URL = process.env.FRONTEND_URL || "https://kicksphere-shoes-ecommerce.vercel.app";
 
 const baseTemplate = (content) => `
@@ -10,7 +10,7 @@ const baseTemplate = (content) => `
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #000; margin: 0; padding: 0; color: #fff; }
     .container { max-width: 600px; margin: 0 auto; background-color: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 12px; overflow: hidden; margin-top: 20px; margin-bottom: 20px; }
-    .header { padding: 40px 20px; text-align: center; background: linear-gradient(180deg, #111 0%, #0a0a0a 100%); border-bottom: 1px solid #1f1f1f; }
+    .header { padding: 40px 20px; text-align: center; background-color: #000000; border-bottom: 1px solid #1f1f1f; }
     .content { padding: 40px 30px; line-height: 1.6; text-align: center; }
     .footer { padding: 30px; text-align: center; border-top: 1px solid #1f1f1f; font-size: 12px; color: #a0a0a0; background-color: #050505; }
     .button { display: inline-block; padding: 14px 35px; background-color: #e8000d; color: #fff !important; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 25px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(232, 0, 13, 0.3); }
@@ -26,8 +26,8 @@ const baseTemplate = (content) => `
 <body>
   <div class="container">
     <div class="header">
-      <a href="${BASE_URL}" target="_blank">
-        <img src="${LOGO_URL}" alt="KickSphere" width="180" style="display: inline-block; border: none; outline: none;">
+      <a href="${BASE_URL}" target="_blank" style="text-decoration: none;">
+        <img src="${LOGO_URL}" alt="KickSphere" width="150" border="0" style="display: block; margin: 0 auto; border: none; outline: none; text-decoration: none;">
       </a>
     </div>
     <div class="content">
