@@ -45,6 +45,24 @@ export const register = async (req, res) => {
         const hashpass = await bcrypt.hash(password, 10)
         const user = await User.create({ name, email, password: hashpass, accountverify: false })
 
+        // Automatically generate and send OTP after registration
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+        user.otp = otp;
+        user.expireat = Date.now() + 15 * 60 * 1000; // 15 mins for registration OTP
+        await user.save();
+
+        try {
+            await transporter.sendMail({
+                from: `"KickSphere" <${process.env.EMAIL_USER}>`,
+                to: user.email,
+                subject: "Verify Your KickSphere Account",
+                html: otpEmail(otp, "verification")
+            });
+        } catch (mailErr) {
+            logger.error("Initial register OTP mail failed:", mailErr);
+            // We still return success because the user can click "Resend OTP"
+        }
+
         return res.status(201).json({ message: "Registration successful. Please verify OTP.", email: user.email })
     } catch (error) {
         logger.error("Registration error:", error);
@@ -157,7 +175,7 @@ export const resetotpgenerate = async (req, res) => {
         await user.save();
         try {
             await transporter.sendMail({
-                from: process.env.EMAIL_USER,
+                from: `"KickSphere" <${process.env.EMAIL_USER}>`,
                 to: user.email,
                 subject: "Reset Your KickSphere Password",
                 html: otpEmail(otp, "reset")
@@ -228,7 +246,7 @@ export const otpgenerate = async (req, res) => {
 
         try {
             await transporter.sendMail({
-                from: process.env.EMAIL_USER,
+                from: `"KickSphere" <${process.env.EMAIL_USER}>`,
                 to: user.email,
                 subject: "Verify Your KickSphere Account",
                 html: otpEmail(otp, "verification")
@@ -281,7 +299,7 @@ export const otpverify = async (req, res) => {
         // Send Welcome Email after successful verification
         try {
             await transporter.sendMail({
-                from: process.env.EMAIL_USER,
+                from: `"KickSphere" <${process.env.EMAIL_USER}>`,
                 to: user.email,
                 subject: "Welcome to KickSphere!",
                 html: welcomeEmail(user.name)

@@ -1,4 +1,5 @@
-const LOGO_URL = "https://res.cloudinary.com/jay-patel/image/upload/v1776829338/jayma8jlxapensoy6c1w.jpg"; // Using the user's logo from earlier
+const LOGO_URL = "https://res.cloudinary.com/jay-patel/image/upload/v1776829338/jayma8jlxapensoy6c1w.jpg";
+const BASE_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const baseTemplate = (content) => `
 <!DOCTYPE html>
@@ -24,13 +25,16 @@ const baseTemplate = (content) => `
 <body>
   <div class="container">
     <div class="header">
-      <img src="${LOGO_URL}" alt="KickSphere" class="logo">
+      <a href="${BASE_URL}">
+        <img src="${LOGO_URL}" alt="KickSphere" class="logo">
+      </a>
     </div>
     <div class="content">
       ${content}
     </div>
     <div class="footer">
       <p>&copy; ${new Date().getFullYear()} KickSphere. All rights reserved.</p>
+      <p><a href="${BASE_URL}" style="color: #e8000d; text-decoration: none;">Visit our Store</a></p>
       <p>Elevating your sneaker game.</p>
     </div>
   </div>
@@ -42,7 +46,7 @@ export const welcomeEmail = (name) => baseTemplate(`
   <h1>Welcome to the Tribe, <span class="accent">${name}</span>!</h1>
   <p>We're thrilled to have you join KickSphere, the ultimate destination for sneakerheads.</p>
   <p>Explore our exclusive collection and stay ahead of the game with the latest drops.</p>
-  <a href="${process.env.FRONTEND_URL || 'http://localhost:5176'}" class="button">Start Exploring</a>
+  <a href="${BASE_URL}" class="button">Start Exploring</a>
 `);
 
 export const otpEmail = (otp, type = "verification") => baseTemplate(`
@@ -59,5 +63,5 @@ export const orderEmail = (order) => baseTemplate(`
     <p><strong>Total Amount:</strong> ₹${order.amount}</p>
     <p><strong>Payment Method:</strong> ${order.paymentmethod}</p>
   </div>
-  <a href="${process.env.FRONTEND_URL || 'http://localhost:5176'}/orders" class="button">View My Orders</a>
+  <a href="${BASE_URL}/orders" class="button">View My Orders</a>
 `);
