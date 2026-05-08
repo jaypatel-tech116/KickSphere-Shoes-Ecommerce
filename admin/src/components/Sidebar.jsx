@@ -17,7 +17,7 @@ function NavContent({ onClose }) {
   const { clearAdmin, admin } = useAdminAuthStore()
 
   const handleLogout = async () => {
-    try { await api.get('/auth/logout') } catch {}
+    try { await api.get('/auth/logout') } catch { }
     clearAdmin()
     toast.success('Logged out')
     navigate('/login')
@@ -28,10 +28,10 @@ function NavContent({ onClose }) {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 py-5 border-b border-[#1F1F1F] flex-shrink-0">
-        <img src="/logo.png" alt="KickSphere" className="h-7 w-auto" onError={(e) => e.target.style.display='none'} />
+        <img src="/logo.png" alt="KickSphere" className="h-7 w-auto" onError={(e) => e.target.style.display = 'none'} />
         <div>
-          <p className="font-[Bebas_Neue] text-white text-lg tracking-widest leading-none">KICKSPHERE</p>
-          <p className="font-[Barlow] text-[#E8000D] text-xs font-semibold">ADMIN</p>
+          <p className="font-[Barlow] text-white text-lg font-semibold">ADMIN</p>
+          <p className="font-[Barlow] text-[#E8000D] text-xs font-semibold">PORTAL</p>
         </div>
       </div>
 
@@ -45,10 +45,9 @@ function NavContent({ onClose }) {
               end={item.to === '/'}
               onClick={onClose}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all font-[Barlow] font-medium text-sm ${
-                  isActive
-                    ? 'bg-[#E8000D]/10 text-[#E8000D] border border-[#E8000D]/20'
-                    : 'text-[#A0A0A0] hover:text-white hover:bg-[#1F1F1F]'
+                `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all font-[Barlow] font-medium text-sm ${isActive
+                  ? 'bg-[#E8000D]/10 text-[#E8000D] border border-[#E8000D]/20'
+                  : 'text-[#A0A0A0] hover:text-white hover:bg-[#1F1F1F]'
                 }`
               }
             >
@@ -89,7 +88,7 @@ export default function Sidebar() {
       {/* Mobile top header */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[#0A0A0A] border-b border-[#1F1F1F] sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <img src="/Small_Logo.png" alt="" className="h-7 w-7 object-contain" onError={(e) => e.target.style.display='none'} />
+          <img src="/Small_Logo.png" alt="" className="h-7 w-7 object-contain" onError={(e) => e.target.style.display = 'none'} />
           <span className="font-[Bebas_Neue] text-white text-xl tracking-widest">KICKSPHERE</span>
           <span className="font-[Barlow] text-[#E8000D] text-xs font-bold">ADMIN</span>
         </div>

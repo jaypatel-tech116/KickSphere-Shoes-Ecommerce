@@ -37,8 +37,7 @@ export default function Login() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
         <div className="text-center mb-10">
           <img src="/logo.png" alt="KickSphere" className="h-14 mx-auto mb-4 object-contain" onError={(e) => { e.target.src = '/Small_Logo.png'; }} />
-          <h1 className="font-[Bebas_Neue] text-5xl text-white tracking-widest">KICKSPHERE</h1>
-          <p className="text-[#E8000D] font-[Barlow] text-sm font-bold tracking-[0.2em] mt-2 uppercase">ADMIN PORTAL</p>
+          <p className="text-[#E8000D] font-[Barlow] text-lg font-bold tracking-[0.2em] mt-2 uppercase">ADMIN PORTAL</p>
         </div>
         <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-3xl p-8 shadow-2xl">
           <h2 className="font-[Bebas_Neue] text-3xl text-white tracking-wide mb-6">SIGN IN</h2>
