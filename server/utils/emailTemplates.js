@@ -1,4 +1,4 @@
-const LOGO_URL = "https://res.cloudinary.com/jay-patel/image/upload/v1776829338/jayma8jlxapensoy6c1w.jpg";
+const LOGO_URL = "https://res.cloudinary.com/jay-patel/image/upload/v1778223309/logo_en8fwg.png";
 const BASE_URL = process.env.FRONTEND_URL || "https://kicksphere-shoes-ecommerce.vercel.app";
 
 const baseTemplate = (content) => `
@@ -27,7 +27,7 @@ const baseTemplate = (content) => `
   <div class="container">
     <div class="header">
       <a href="${BASE_URL}" target="_blank">
-        <img src="https://res.cloudinary.com/jay-patel/image/upload/v1776829338/jayma8jlxapensoy6c1w.jpg" alt="KickSphere" width="180" style="display: inline-block; border: none; outline: none;">
+        <img src="${LOGO_URL}" alt="KickSphere" width="180" style="display: inline-block; border: none; outline: none;">
       </a>
     </div>
     <div class="content">
