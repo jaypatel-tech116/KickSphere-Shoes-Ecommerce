@@ -21,14 +21,19 @@ app.set("trust proxy", 1);
 const allowedOrigins = [
   process.env.CLIENT_ORIGIN?.replace(/\/$/, ""),
   process.env.ADMIN_ORIGIN?.replace(/\/$/, ""),
+  "https://kicksphere-shoes-ecommerce.vercel.app",
+  "https://kick-sphere-shoes-ecommerce-admin.vercel.app"
 ].filter(Boolean);
 
-// Around line 32 in app.js
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin.replace(/\/$/, ""))) {
       callback(null, true);
     } else {
+      console.warn(`[CORS REJECTED]: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     }
   },
