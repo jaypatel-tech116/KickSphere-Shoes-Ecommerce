@@ -43,18 +43,14 @@ async function sendOrderEmail(userId, order) {
   try {
     const user = await User.findById(userId);
     if (user && user.email) {
-      console.log(`[ORDER] Sending confirmation for Order ${order._id} to User: ${user.email} (ID: ${userId})`);
       await transporter.sendMail({
         to: user.email,
         subject: "Your KickSphere Order is Confirmed!",
         html: orderEmail(order)
       });
-      console.log(`[ORDER DEBUG] Email sent successfully to ${user.email}`);
-    } else {
-      console.warn(`[ORDER DEBUG] Could not find user email for ID: ${userId}`);
     }
   } catch (mailErr) {
-    console.error("[ORDER DEBUG] Email failure:", mailErr.message);
+    logger.error("Order confirmation email failed:", mailErr);
   }
 }
 
@@ -76,7 +72,7 @@ export const Placeorder = async (req, res) => {
 
     // Run slow tasks in background
     decrementStock(items);
-    await sendOrderEmail(userId, neworder);
+    sendOrderEmail(userId, neworder);
 
     return res.status(201).json({ message: 'Order placed', orderId: neworder._id });
   } catch (error) {
@@ -211,7 +207,7 @@ export const verifyrazorpay = async (req, res) => {
 
     // Run secondary tasks in background
     decrementStock(items);
-    await sendOrderEmail(userId, neworder);
+    sendOrderEmail(userId, neworder);
 
     return res.status(200).json({ success: true, message: "Payment successful", orderId: neworder._id });
   } catch (error) {
