@@ -13,13 +13,6 @@ import transporter from "../config/nodemailer.js"
 import { welcomeEmail, otpEmail } from "../utils/emailTemplates.js"
 import dotenv from "dotenv"
 dotenv.config()
-const hasEmailConfig = () => {
-    const emailUser = String(process.env.EMAIL_USER || "").trim();
-    const emailPass = String(process.env.EMAIL_PASS || "").replace(/\s+/g, "");
-    return Boolean(emailUser && emailPass);
-};
-
-
 
 const getCookieOptions = (maxAge) => {
     return {
@@ -53,20 +46,14 @@ export const register = async (req, res) => {
         user.expireat = Date.now() + 15 * 60 * 1000; // 15 mins for registration OTP
         await user.save();
 
-        console.log(`[DEBUG] Attempting to send register OTP to ${user.email}...`);
         try {
-            await Promise.race([
-                transporter.sendMail({
-                    from: `"KickSphere" <${process.env.EMAIL_USER}>`,
-                    to: user.email,
-                    subject: "Verify Your KickSphere Account",
-                    html: otpEmail(otp, "verification")
-                }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 25000))
-            ]);
-            console.log("[DEBUG] Register OTP email sent successfully");
+            await transporter.sendMail({
+                to: user.email,
+                subject: "Verify Your KickSphere Account",
+                html: otpEmail(otp, "verification")
+            });
         } catch (mailErr) {
-            console.error("[DEBUG] Initial register OTP mail failed:", mailErr.message);
+            // Non-blocking error
         }
 
         return res.status(201).json({ message: "Registration successful. Please verify OTP.", email: user.email })
@@ -164,40 +151,24 @@ export const Adminlogin = async (req, res) => {
 export const resetotpgenerate = async (req, res) => {
     try {
         const { email } = req.body;
-        console.log(`[DEBUG] resetotpgenerate called for: ${email}`);
-
-        if (!hasEmailConfig()) {
-            console.error("[DEBUG] Email config missing");
-            return res.status(500).json({ message: "Email service not configured on server" });
-        }
-
         const user = await User.findOne({ email });
+
         if (!user) {
-            console.warn(`[DEBUG] User not found: ${email}`);
             return res.status(404).json({ message: "User not found" });
         }
 
         const otp = String(Math.floor(100000 + Math.random() * 900000));
         user.resetotp = otp;
         user.resetexpireat = Date.now() + 5 * 60 * 1000;
-        
-        console.log("[DEBUG] Saving user OTP...");
         await user.save();
 
-        console.log("[DEBUG] Attempting to send email...");
         try {
-            await Promise.race([
-                transporter.sendMail({
-                    from: `"KickSphere" <${process.env.EMAIL_USER}>`,
-                    to: user.email,
-                    subject: "Reset Your KickSphere Password",
-                    html: otpEmail(otp, "reset")
-                }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 25000))
-            ]);
-            console.log("[DEBUG] Email sent successfully");
+            await transporter.sendMail({
+                to: user.email,
+                subject: "Reset Your KickSphere Password",
+                html: otpEmail(otp, "reset")
+            });
         } catch (mailError) {
-            console.error("[DEBUG] Mail error caught:", mailError.message);
             return res.status(500).json({
                 message: "Unable to send reset email.",
                 error: mailError.message
@@ -208,7 +179,6 @@ export const resetotpgenerate = async (req, res) => {
             message: "OTP sent to your email successfully",
         });
     } catch (error) {
-        console.error("[DEBUG] Global controller error:", error);
         return res.status(500).json({
             message: "Fail OTP generate",
         });
@@ -260,20 +230,13 @@ export const otpgenerate = async (req, res) => {
         user.expireat = Date.now() + 5 * 60 * 1000;
         await user.save();
 
-        console.log(`[DEBUG] Attempting to resend OTP to ${user.email}...`);
         try {
-            await Promise.race([
-                transporter.sendMail({
-                    from: `"KickSphere" <${process.env.EMAIL_USER}>`,
-                    to: user.email,
-                    subject: "Verify Your KickSphere Account",
-                    html: otpEmail(otp, "verification")
-                }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 25000))
-            ]);
-            console.log("[DEBUG] Resend OTP email sent successfully");
+            await transporter.sendMail({
+                to: user.email,
+                subject: "Verify Your KickSphere Account",
+                html: otpEmail(otp, "verification")
+            });
         } catch (mailError) {
-            console.error("[DEBUG] Resend OTP mail error:", mailError.message);
             return res.status(500).json({
                 message: "Unable to send OTP email.",
                 error: mailError.message

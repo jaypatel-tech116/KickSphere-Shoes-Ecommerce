@@ -45,7 +45,6 @@ async function sendOrderEmail(userId, order) {
     const user = await User.findById(userId);
     if (user && user.email) {
       await transporter.sendMail({
-        from: `"KickSphere" <${process.env.EMAIL_USER}>`,
         to: user.email,
         subject: "Your KickSphere Order is Confirmed!",
         html: orderEmail(order)

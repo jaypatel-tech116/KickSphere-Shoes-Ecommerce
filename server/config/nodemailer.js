@@ -17,7 +17,6 @@ const transporter = {
         html,
       };
       const response = await sgMail.send(msg);
-      console.log("[DEBUG] SendGrid Response:", response[0].statusCode);
       return response;
     } catch (error) {
       console.error("SendGrid Error:", error.response ? error.response.body : error.message);

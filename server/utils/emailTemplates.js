@@ -25,8 +25,8 @@ const baseTemplate = (content) => `
 <body>
   <div class="container">
     <div class="header">
-      <a href="${BASE_URL}">
-        <img src="${LOGO_URL}" alt="KickSphere" class="logo">
+      <a href="${BASE_URL}" target="_blank">
+        <img src="https://res.cloudinary.com/jay-patel/image/upload/jayma8jlxapensoy6c1w.jpg" alt="KickSphere" width="180" style="display: inline-block; border: none; outline: none;">
       </a>
     </div>
     <div class="content">
