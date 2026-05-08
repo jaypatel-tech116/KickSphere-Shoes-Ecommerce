@@ -19,6 +19,8 @@ const hasEmailConfig = () => {
     return Boolean(emailUser && emailPass);
 };
 
+
+
 const getCookieOptions = (maxAge) => {
     return {
         httpOnly: true,
@@ -60,7 +62,7 @@ export const register = async (req, res) => {
                     subject: "Verify Your KickSphere Account",
                     html: otpEmail(otp, "verification")
                 }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 10000))
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 25000))
             ]);
             console.log("[DEBUG] Register OTP email sent successfully");
         } catch (mailErr) {
@@ -191,7 +193,7 @@ export const resetotpgenerate = async (req, res) => {
                     subject: "Reset Your KickSphere Password",
                     html: otpEmail(otp, "reset")
                 }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 10000))
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 25000))
             ]);
             console.log("[DEBUG] Email sent successfully");
         } catch (mailError) {
@@ -267,7 +269,7 @@ export const otpgenerate = async (req, res) => {
                     subject: "Verify Your KickSphere Account",
                     html: otpEmail(otp, "verification")
                 }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 10000))
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Email Timeout")), 25000))
             ]);
             console.log("[DEBUG] Resend OTP email sent successfully");
         } catch (mailError) {
