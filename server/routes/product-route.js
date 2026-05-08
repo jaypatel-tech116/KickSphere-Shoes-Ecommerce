@@ -1,5 +1,5 @@
 import express from "express"
-import { addproduct, fetchsingleproduct, filterproduct, listproduct, removeproduct, updateproduct, rating, getpricebounds } from "../controller/product-controller.js"
+import { addproduct, fetchsingleproduct, filterproduct, listproduct, removeproduct, updateproduct, rating, getpricebounds, getbrands } from "../controller/product-controller.js"
 import upload from "../middleware/multer.js";
 import adminauth from "../middleware/adminauth.js";
 import isauth from "../middleware/isauthmid.js";
@@ -28,6 +28,7 @@ productrouter.get("/listproduct",listproduct )
 productrouter.delete("/removeproduct/:id",adminauth,removeproduct)
 productrouter.get("/filterproduct",filterproduct)
 productrouter.get("/price-bounds", getpricebounds)
+productrouter.get("/brands", getbrands)
 productrouter.get("/singleproduct/:id",fetchsingleproduct)
 productrouter.put("/updateproduct/:id",upload.fields([
 {name:"image1",maxCount:1},

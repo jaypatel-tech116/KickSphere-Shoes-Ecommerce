@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Filter, X, SlidersHorizontal, ChevronDown } from 'lucide-react'
-import { useFilterProducts, usePriceBounds } from '../hooks/useProducts'
+import { useFilterProducts, usePriceBounds, useBrands } from '../hooks/useProducts'
 import ProductCard, { ProductCardSkeleton } from '../components/ui/ProductCard'
 
 const CATEGORIES = ['Men', 'Women', 'Kids', 'Unisex']
@@ -28,6 +28,7 @@ export default function Collection() {
     sortBy: 'date',
     order: 'desc',
     search: params.get('search') || '',
+    brand: params.get('brand') || '',
   })
   const [page, setPage] = useState(1)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -35,6 +36,7 @@ export default function Collection() {
   const [sortLabel, setSortLabel] = useState('Newest')
 
   const { data: boundsData } = usePriceBounds()
+  const { data: brandsData } = useBrands()
   const { data, isLoading } = useFilterProducts(filters)
 
   useEffect(() => {
@@ -47,17 +49,26 @@ export default function Collection() {
     }
   }, [boundsData])
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search)
+    const search = searchParams.get('search') || ''
+    const category = searchParams.get('category') || ''
+    const subcategory = searchParams.get('subcategory') || ''
+    const brand = searchParams.get('brand') || ''
+
+    setFilters(prev => ({
+      ...prev,
+      search,
+      category,
+      subcategory,
+      brand
+    }))
+    setPage(1)
+  }, [location.search])
+
   useEffect(() => { document.title = 'Collection | KickSphere' }, [])
 
-  const allProducts = data?.products || []
-  const searchQuery = filters.search.toLowerCase()
-  const filtered = searchQuery
-    ? allProducts.filter((p) =>
-        p.name?.toLowerCase().includes(searchQuery) ||
-        p.brand?.toLowerCase().includes(searchQuery) ||
-        p.description?.toLowerCase().includes(searchQuery)
-      )
-    : allProducts
+  const filtered = data?.products || []
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
   const displayed = infiniteMode ? filtered.slice(0, page * PAGE_SIZE) : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
@@ -72,6 +83,7 @@ export default function Collection() {
   const activeFilterChips = [
     filters.category && { key: 'category', label: `Category: ${filters.category}` },
     filters.subcategory && { key: 'subcategory', label: `Type: ${filters.subcategory}` },
+    filters.brand && { key: 'brand', label: `Brand: ${filters.brand}` },
     filters.search && { key: 'search', label: `Search: "${filters.search}"` },
   ].filter(Boolean)
 
@@ -114,6 +126,32 @@ export default function Collection() {
         </div>
       </div>
 
+      {/* Brand */}
+      <div>
+        <p className="font-[Bebas_Neue] text-white text-lg tracking-wide mb-3">BRAND</p>
+        <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+          {brandsData?.brands ? (
+            brandsData.brands.length > 0 ? (
+              brandsData.brands.map((b) => (
+                <label key={b} className="flex items-center gap-2.5 cursor-pointer group">
+                  <input type="checkbox" checked={filters.brand === b} onChange={() => setFilter('brand', filters.brand === b ? '' : b)} className="hidden" />
+                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${filters.brand === b ? 'bg-[#E8000D] border-[#E8000D]' : 'border-[#1F1F1F] group-hover:border-[#E8000D]/50'}`}>
+                    {filters.brand === b && <div className="w-2 h-2 bg-white rounded-sm" />}
+                  </div>
+                  <span className={`font-[Barlow] text-sm transition-colors ${filters.brand === b ? 'text-white' : 'text-[#A0A0A0] group-hover:text-white'}`}>{b}</span>
+                </label>
+              ))
+            ) : (
+              <p className="text-[#A0A0A0] text-xs font-[Barlow]">No brands found</p>
+            )
+          ) : (
+            <div className="space-y-2 animate-pulse">
+              {[1, 2, 3].map(i => <div key={i} className="h-4 bg-[#1F1F1F] rounded w-3/4" />)}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Price Range */}
       <div>
         <p className="font-[Bebas_Neue] text-white text-lg tracking-wide mb-3">PRICE RANGE</p>
@@ -133,7 +171,7 @@ export default function Collection() {
         </div>
       </div>
 
-      <button onClick={() => { setFilters({ category: '', subcategory: '', minPrice: boundsData?.minPrice || 0, maxPrice: boundsData?.maxPrice || 10000, sortBy: 'date', order: 'desc', search: '' }); setPage(1) }} className="w-full border border-[#1F1F1F] hover:border-[#E8000D] text-[#A0A0A0] hover:text-white font-[Barlow] text-sm py-2 rounded-lg transition-all">
+      <button onClick={() => { setFilters({ category: '', subcategory: '', brand: '', minPrice: boundsData?.minPrice || 0, maxPrice: boundsData?.maxPrice || 10000, sortBy: 'date', order: 'desc', search: '' }); setPage(1) }} className="w-full border border-[#1F1F1F] hover:border-[#E8000D] text-[#A0A0A0] hover:text-white font-[Barlow] text-sm py-2 rounded-lg transition-all">
         Clear All Filters
       </button>
     </div>

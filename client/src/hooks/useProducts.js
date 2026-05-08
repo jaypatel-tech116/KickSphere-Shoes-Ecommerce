@@ -30,10 +30,12 @@ export function useFilterProducts(filters) {
       const params = new URLSearchParams()
       if (filters.category) params.append('category', filters.category)
       if (filters.subcategory) params.append('subcategory', filters.subcategory)
+      if (filters.brand) params.append('brand', filters.brand)
       if (filters.minPrice !== undefined) params.append('minPrice', filters.minPrice)
       if (filters.maxPrice !== undefined) params.append('maxPrice', filters.maxPrice)
       if (filters.sortBy) params.append('sortBy', filters.sortBy)
       if (filters.order) params.append('order', filters.order)
+      if (filters.search) params.append('search', filters.search)
       const res = await api.get(`/product/filterproduct?${params.toString()}`)
       return res.data
     },
@@ -57,6 +59,17 @@ export function usePriceBounds() {
     queryKey: ['priceBounds'],
     queryFn: async () => {
       const res = await api.get('/product/price-bounds')
+      return res.data
+    },
+    staleTime: 1000 * 60 * 10,
+  })
+}
+
+export function useBrands() {
+  return useQuery({
+    queryKey: ['brands'],
+    queryFn: async () => {
+      const res = await api.get('/product/brands')
       return res.data
     },
     staleTime: 1000 * 60 * 10,

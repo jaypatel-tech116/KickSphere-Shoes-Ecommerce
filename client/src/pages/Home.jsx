@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import HeroSection from '../components/home/HeroSection'
 import MarqueeBanner from '../components/home/MarqueeBanner'
 import CategorySection from '../components/home/CategorySection'
@@ -11,6 +12,7 @@ import { Star } from 'lucide-react'
 const brands = ['Nike', 'Adidas', 'Puma', 'Reebok', 'New Balance']
 
 export default function Home() {
+  const navigate = useNavigate()
   useEffect(() => { document.title = 'Home | KickSphere' }, [])
 
   return (
@@ -34,6 +36,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
                 whileHover={{ scale: 1.05, borderColor: '#E8000D' }}
+                onClick={() => navigate(`/collection?brand=${encodeURIComponent(brand)}`)}
                 className="glass rounded-xl p-5 flex items-center justify-center cursor-pointer transition-all"
               >
                 <span className="font-[Bebas_Neue] text-xl text-[#A0A0A0] hover:text-white tracking-widest transition-colors">{brand}</span>

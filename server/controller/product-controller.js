@@ -187,14 +187,12 @@ export const listproduct = async (req, res) => {
       message: "list product error",
     });
   }
-
-}
+};
 
 export const removeproduct = async (req, res) => {
   try {
-    logger.info(req.params)
     const id = req.params.id;
-    const product = await Product.findByIdAndDelete(id)
+    await Product.findByIdAndDelete(id);
     return res.status(200).json({ success: true, message: "Product removed successfully" });
   } catch (error) {
     logger.error("Remove product error:", error);
@@ -203,27 +201,33 @@ export const removeproduct = async (req, res) => {
       message: "remove product error",
     });
   }
-}
+};
 
 export const filterproduct = async (req, res) => {
   try {
-
-    const { category, subcategory, maxPrice, minPrice, search, sortBy, order, limit } = req.query;
-
+    const { category, subcategory, brand, maxPrice, minPrice, search, sortBy, order, limit } = req.query;
 
     const filter = {};
 
     if (category) {
-      filter.category = category;
+      if (category === 'Men' || category === 'Women') {
+        filter.category = { $in: [category, 'Unisex'] };
+      } else {
+        filter.category = category;
+      }
     }
 
     if (subcategory) {
       filter.subcategory = subcategory;
     }
 
+    if (brand) {
+      filter.brand = { $regex: `^${brand}$`, $options: 'i' };
+    }
+
     if (search) {
       filter.$or = [
-         { category: { $regex: search, $options: "i" } },
+        { category: { $regex: search, $options: "i" } },
         { subcategory: { $regex: search, $options: "i" } },
         { name: { $regex: search, $options: "i" } },
         { brand: { $regex: search, $options: "i" } }
@@ -238,19 +242,12 @@ export const filterproduct = async (req, res) => {
 
     let sortOption = {};
 
-    // Handle legacy 'sort' param
-
-
-
-
-
-    // Handle new 'sortBy' and 'order' params
     if (sortBy) {
       const sortField = sortBy === 'date' ? 'createdAt' : sortBy === 'rating' ? 'avgrating' : sortBy;
       sortOption[sortField] = order === 'desc' ? -1 : 1;
     }
 
-        const products = await Product.find(filter).sort(sortOption).limit(Number(limit) || 500);
+    const products = await Product.find(filter).sort(sortOption).limit(Number(limit) || 500);
 
     res.status(200).json({ success: true, products });
 
@@ -258,6 +255,7 @@ export const filterproduct = async (req, res) => {
     res.status(500).json({ message: "Filter problem" });
   }
 };
+
 
 
 export const getpricebounds = async (req, res) => {
@@ -284,6 +282,20 @@ export const getpricebounds = async (req, res) => {
   } catch (error) {
     logger.error("Error fetching price bounds:", error);
     res.status(500).json({ success: false, message: "Error fetching price bounds" });
+  }
+};
+
+export const getbrands = async (req, res) => {
+  try {
+    const brands = await Product.distinct('brand');
+    const uniqueBrands = Array.from(new Set(brands.map(b => b.trim().toLowerCase())));
+    const formattedBrands = uniqueBrands.map(b => 
+      b.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+    ).sort();
+    res.status(200).json({ success: true, brands: formattedBrands });
+  } catch (error) {
+    logger.error("Error fetching brands:", error);
+    res.status(500).json({ success: false, message: "Error fetching brands" });
   }
 };
 
