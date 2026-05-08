@@ -1,31 +1,30 @@
-import { Resend } from 'resend';
+import sgMail from '@sendgrid/mail';
 import dotenv from "dotenv";
 dotenv.config();
 
-// Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // We keep the name 'transporter' and the 'sendMail' method 
 // so we don't have to change the code in other files.
 const transporter = {
-  sendMail: async ({ from, to, subject, html }) => {
+  sendMail: async ({ to, subject, html }) => {
     try {
-      // Resend 'from' address rules:
-      // In testing (onboarding), you must use 'onboarding@resend.dev'
-      // and 'to' must be your own email.
-      const data = await resend.emails.send({
-        from: 'KickSphere <onboarding@resend.dev>',
+      const msg = {
         to,
+        from: process.env.EMAIL_USER, // MUST be your verified Single Sender in SendGrid
         subject,
         html,
-      });
-      return data;
+      };
+      const response = await sgMail.send(msg);
+      console.log("[DEBUG] SendGrid Response:", response[0].statusCode);
+      return response;
     } catch (error) {
-      console.error("Resend Error:", error);
+      console.error("SendGrid Error:", error.response ? error.response.body : error.message);
       throw error;
     }
   },
-  verify: () => Promise.resolve(true) // Mock verify for health checks
+  verify: () => Promise.resolve(true)
 };
 
 export default transporter;
