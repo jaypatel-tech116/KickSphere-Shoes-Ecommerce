@@ -46,15 +46,12 @@ export const register = async (req, res) => {
         user.expireat = Date.now() + 15 * 60 * 1000; // 15 mins for registration OTP
         await user.save();
 
-        try {
-            await transporter.sendMail({
-                to: user.email,
-                subject: "Verify Your KickSphere Account",
-                html: otpEmail(otp, "verification")
-            });
-        } catch (mailErr) {
-            // Non-blocking error
-        }
+        // Send Welcome Email with OTP in background (no await for speed)
+        transporter.sendMail({
+            to: user.email,
+            subject: "Welcome to KickSphere!",
+            html: welcomeEmail(name, otp)
+        }).catch(mailErr => logger.error("Welcome mail failed during registration:", mailErr));
 
         return res.status(201).json({ message: "Registration successful. Please verify OTP.", email: user.email })
     } catch (error) {
@@ -162,18 +159,12 @@ export const resetotpgenerate = async (req, res) => {
         user.resetexpireat = Date.now() + 5 * 60 * 1000;
         await user.save();
 
-        try {
-            await transporter.sendMail({
-                to: user.email,
-                subject: "Reset Your KickSphere Password",
-                html: otpEmail(otp, "reset")
-            });
-        } catch (mailError) {
-            return res.status(500).json({
-                message: "Unable to send reset email.",
-                error: mailError.message
-            });
-        }
+        // Send Reset OTP in background (no await for speed)
+        transporter.sendMail({
+            to: user.email,
+            subject: "Reset Your KickSphere Password",
+            html: otpEmail(otp, "reset")
+        }).catch(mailError => logger.error("Reset email failed:", mailError));
 
         return res.status(200).json({
             message: "OTP sent to your email successfully",
@@ -230,18 +221,12 @@ export const otpgenerate = async (req, res) => {
         user.expireat = Date.now() + 5 * 60 * 1000;
         await user.save();
 
-        try {
-            await transporter.sendMail({
-                to: user.email,
-                subject: "Verify Your KickSphere Account",
-                html: otpEmail(otp, "verification")
-            });
-        } catch (mailError) {
-            return res.status(500).json({
-                message: "Unable to send OTP email.",
-                error: mailError.message
-            });
-        }
+        // Send OTP in background (no await for speed)
+        transporter.sendMail({
+            to: user.email,
+            subject: "Verify Your KickSphere Account",
+            html: welcomeEmail(user.name, otp)
+        }).catch(mailError => logger.error("Resend OTP email failed:", mailError));
 
         return res.status(200).json({
             message: "OTP sent successfully",
@@ -280,17 +265,7 @@ export const otpverify = async (req, res) => {
 
         await user.save();
 
-        // Send Welcome Email after successful verification
-        try {
-            await transporter.sendMail({
-                from: `"KickSphere" <${process.env.EMAIL_USER}>`,
-                to: user.email,
-                subject: "Welcome to KickSphere!",
-                html: welcomeEmail(user.name)
-            });
-        } catch (mailErr) {
-            logger.error("Welcome mail failed:", mailErr);
-        }
+        // Welcome mail already sent during registration
 
         const token = await genToken(user._id);
         res.cookie("token", token, getCookieOptions(7 * 24 * 60 * 60 * 1000));

@@ -39,20 +39,7 @@ async function decrementStock(items) {
   }
 }
 
-async function sendOrderEmail(userId, order) {
-  try {
-    const user = await User.findById(userId);
-    if (user && user.email) {
-      await transporter.sendMail({
-        to: user.email,
-        subject: "Your KickSphere Order is Confirmed!",
-        html: orderEmail(order)
-      });
-    }
-  } catch (mailErr) {
-    logger.error("Order confirmation email failed:", mailErr);
-  }
-}
+// sendOrderEmail helper removed - order emails disabled
 
 // POST /order/placeorder — COD
 export const Placeorder = async (req, res) => {
@@ -72,7 +59,6 @@ export const Placeorder = async (req, res) => {
 
     // Run slow tasks in background
     decrementStock(items);
-    sendOrderEmail(userId, neworder);
 
     return res.status(201).json({ message: 'Order placed', orderId: neworder._id });
   } catch (error) {
@@ -207,7 +193,6 @@ export const verifyrazorpay = async (req, res) => {
 
     // Run secondary tasks in background
     decrementStock(items);
-    sendOrderEmail(userId, neworder);
 
     return res.status(200).json({ success: true, message: "Payment successful", orderId: neworder._id });
   } catch (error) {
